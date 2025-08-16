@@ -3,10 +3,11 @@ services:
     name: event-proxy
     env: java
     plan: free
+    branch: main
     buildCommand: ./gradlew build -x test
     startCommand: java -jar build/libs/event-proxy-0.0.1-SNAPSHOT.jar
     envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: prod
+      - key: JAVA_VERSION
+        value: 21
       - key: TICKETMASTER_API_KEY
         sync: false
