@@ -1,4 +1,4 @@
-package com.mcckyle.event_proxy.exception;
+package com.mcckyle.eventproxy.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

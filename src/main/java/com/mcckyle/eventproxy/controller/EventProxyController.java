@@ -1,10 +1,9 @@
-package com.mcckyle.event_proxy.controller;
+package com.mcckyle.eventproxy.controller;
 
-import com.mcckyle.event_proxy.service.EventService;
+import com.mcckyle.eventproxy.service.EventService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class EventProxyController

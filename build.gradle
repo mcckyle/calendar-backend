@@ -6,10 +6,11 @@ plugins {
 
 group = 'com.mcckyle'
 version = '0.0.1-SNAPSHOT'
+description = 'Secure proxy for fetching Saint Louis events from the Ticketmaster API for my React app.'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
 

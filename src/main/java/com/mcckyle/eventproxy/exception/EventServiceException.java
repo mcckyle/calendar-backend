@@ -1,4 +1,4 @@
-package com.mcckyle.event_proxy.exception;
+package com.mcckyle.eventproxy.exception;
 
 public class EventServiceException extends RuntimeException
 {

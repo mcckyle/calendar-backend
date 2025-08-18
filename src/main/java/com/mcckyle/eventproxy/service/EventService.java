@@ -1,6 +1,6 @@
-package com.mcckyle.event_proxy.service;
+package com.mcckyle.eventproxy.service;
 
-import com.mcckyle.event_proxy.exception.EventServiceException;
+import com.mcckyle.eventproxy.exception.EventServiceException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;

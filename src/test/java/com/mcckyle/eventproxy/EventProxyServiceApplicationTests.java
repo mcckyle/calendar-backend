@@ -1,4 +1,4 @@
-package com.mcckyle.event_proxy;
+package com.mcckyle.eventproxy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
