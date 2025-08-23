@@ -8,6 +8,6 @@ services:
     startCommand: java -jar build/libs/event-proxy-0.0.1-SNAPSHOT.jar
     envVars:
       - key: JAVA_VERSION
-        value: 21
+        value: 17
       - key: TICKETMASTER_API_KEY
         sync: false
