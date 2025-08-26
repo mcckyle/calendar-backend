@@ -17,10 +17,9 @@ public class CorsConfig
             public void addCorsMappings(CorsRegistry registry)
             {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://mcckyle.github.io/the-calendar/")
+                        .allowedOrigins("https://mcckyle.github.io")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowedHeaders("*");
             }
         };
     }
