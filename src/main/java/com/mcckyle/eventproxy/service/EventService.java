@@ -16,11 +16,11 @@ public class EventService
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public String fetchEvents(String keyword)
+    public String fetchEvents(String city, String start, String end)
     {
         String ticketmasterUrl = String.format(
-                "https://app.ticketmaster.com/discovery/v2/events.json?apikey=%s&keyword=%s",
-                apiKey, keyword
+                "https://app.ticketmaster.com/discovery/v2/events.json?apikey=%s&city=%s&startDateTime=%sT00:00:00Z&endDateTime=%sT23:59:59Z",
+                apiKey, city, start, end
         );
 
         try
@@ -41,7 +41,7 @@ public class EventService
         }
         catch(Exception e)
         {
-            throw new EventServiceException("An unexpected error occured while fetching events.", e);
+            throw new EventServiceException("An unexpected error occurred while fetching events.", e);
         }
     }
 }
