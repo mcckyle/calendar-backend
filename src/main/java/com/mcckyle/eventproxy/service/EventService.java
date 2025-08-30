@@ -7,6 +7,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
+
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class EventService
@@ -18,9 +21,11 @@ public class EventService
 
     public String fetchEvents(String city, String start, String end)
     {
+        String encodedCity = UriUtils.encode(city, StandardCharsets.UTF_8);
+
         String ticketmasterUrl = String.format(
                 "https://app.ticketmaster.com/discovery/v2/events.json?apikey=%s&city=%s&startDateTime=%sT00:00:00Z&endDateTime=%sT23:59:59Z",
-                apiKey, city, start, end
+                apiKey, encodedCity, start, end
         );
 
         try
