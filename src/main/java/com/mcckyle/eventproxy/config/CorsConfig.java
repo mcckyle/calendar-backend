@@ -17,7 +17,7 @@ public class CorsConfig
             public void addCorsMappings(CorsRegistry registry)
             {
                 registry.addMapping("/**")
-                        .allowedOriginPatterns("https://mcckyle.github.io/**")
+                        .allowedOrigins("https://mcckyle.github.io")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
