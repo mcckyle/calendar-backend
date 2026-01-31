@@ -1,3 +1,12 @@
+//***************************************************************************************
+//
+//   Filename: GlobalExceptionHandler.java
+//   Author: Kyle McColgan
+//   Date: 30 January 2026
+//   Description: This file contains custom exception function definitions for the Saint Louis Events Calendar.
+//
+//***************************************************************************************
+
 package com.mcckyle.eventproxy.exception;
 
 import org.springframework.http.HttpStatus;

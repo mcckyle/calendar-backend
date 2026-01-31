@@ -1,3 +1,12 @@
+//***************************************************************************************
+//
+//   Filename: EventProxyController.java
+//   Author: Kyle McColgan
+//   Date: 30 January 2026
+//   Description: This file provides an endpoint for the Saint Louis Events Calendar.
+//
+//***************************************************************************************
+
 package com.mcckyle.eventproxy.controller;
 
 import com.mcckyle.eventproxy.service.EventService;
@@ -7,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+//***************************************************************************************
 
 @RestController
 @RequestMapping("/api")

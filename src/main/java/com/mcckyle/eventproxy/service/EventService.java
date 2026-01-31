@@ -1,3 +1,12 @@
+//***************************************************************************************
+//
+//   Filename: EventService.java
+//   Author: Kyle McColgan
+//   Date: 30 January 2026
+//   Description: This file provides API functionality for the Saint Louis Events Calendar.
+//
+//***************************************************************************************
+
 package com.mcckyle.eventproxy.service;
 
 import com.mcckyle.eventproxy.exception.EventServiceException;
@@ -7,6 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+
+//***************************************************************************************
 
 @Service
 public class EventService
