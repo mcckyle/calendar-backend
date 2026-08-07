@@ -2,8 +2,8 @@
 //
 //   Filename: EventProxyController.java
 //   Author: Kyle McColgan
-//   Date: 30 January 2026
-//   Description: This file provides an endpoint for the Saint Louis Events Calendar.
+//   Date: 6 August 2026
+//   Description: This file provides an endpoint for Saint Louis Events.
 //
 //***************************************************************************************
 
