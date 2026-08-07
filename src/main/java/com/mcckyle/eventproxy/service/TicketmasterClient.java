@@ -11,6 +11,7 @@ package com.mcckyle.eventproxy.service;
 
 import com.mcckyle.eventproxy.exception.EventServiceException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -32,6 +33,7 @@ public class TicketmasterClient
         this.restTemplate = restTemplate;
     }
 
+    @Cacheable(value = "events", key="#city + '_' + #start + '_' + #end")
     public String fetchEvents(String city, String start, String end)
     {
         String ticketmasterUrl = String.format(
