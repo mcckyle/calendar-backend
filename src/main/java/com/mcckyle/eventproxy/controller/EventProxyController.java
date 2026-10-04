@@ -2,7 +2,7 @@
 //
 //   Filename: EventProxyController.java
 //   Author: Kyle McColgan
-//   Date: 6 August 2026
+//   Date: 3 October 2026
 //   Description: This file provides an endpoint for Saint Louis Events.
 //
 //***************************************************************************************
@@ -30,7 +30,7 @@ public class EventProxyController
         this.eventService = eventService;
     }
 
-    @GetMapping("/events")
+    @GetMapping(value = "/events", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getEvents(@RequestParam String city, @RequestParam String start, @RequestParam String end)
     {
         String events = eventService.fetchEvents(city, start, end);

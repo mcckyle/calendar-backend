@@ -4,40 +4,63 @@
 
 # Saint Louis Events Backend
 
-A lightweight Spring Boot backend that powers **Saint Louis Events**, providing a secure proxy between the React frontend and the Ticketmaster Discovery API.
+A lightweight Spring Boot API that securely connects the Saint Louis Events frontend to the Ticketmaster Discovery API.
 
-The backend centralizes API access, protects private API keys, caches responses, and exposes a simple REST endpoint for retrieving weekly event data.
+The service acts as a server-side event proxy, keeping the Ticketmaster API key out of the browser while providing a simple endpoint for retrieving events within a requested date range.
 
----
+## Overview
+
+The backend sits between the React calendar and Ticketmaster:
+
+```text
+Saint Louis Events
+       │
+       │ GET /api/events
+       ▼
+┌──────────────────┐
+│  Spring Boot API │
+│                  │
+│  Event Service   │
+│       │          │
+│       ▼          │
+│ Ticketmaster     │
+│ Client           │
+│       │          │
+│       ▼          │
+│ Caffeine Cache   │
+└────────┬─────────┘
+         │
+         ▼
+ Ticketmaster API
+ ```
+
+This architecture provides a single backend boundary for external API communication while allowing the frontend to consume a purpose-built endpoint.
 
 ## Features
 
-- Spring Boot REST API
-- Secure Ticketmaster API proxy
-- Server-side response caching with Caffeine
-- Centralized exception handling
-- Environment-based configuration
-- Ready for deployment on Render
-- Docker support
+- **Ticketmaster proxy** - Retrieves event data without exposing the API key to clients.
+- **REST API** - Provides a simple `/api/events` endpoint for the calendar.
+- **Response caching** - Uses Caffeine to reduce repeated Ticketmaster requests.
+- **Centralized event handling** - Converts upstream failures into consistent API responses.
+- **Environment-based secrets** - Keeps the Ticketmaster API key outside source control.
+- **Docker support** - Includes a production-oriented container configuration.
+- **Render deployment** - Includes infrastructure configuration for deployment on Render.
 
----
+## Technology
 
-## Tech Stack
-
-- Java 17
-- Spring Boot
-- Spring Web
-- Spring Cache
-- Caffeine Cache
-- Gradle
-- Docker
-- Render
-
----
+| Component | Technology |
+| --- | --- |
+| Language | Java 17 |
+| Framework | Spring Boot 3.x |
+| HTTP client | Spring `RestTemplate` |
+| Caching | Spring Cache + Caffeine |
+| Build system | Gradle |
+| Containerization | Docker |
+| Deployment | Render |
 
 ## API
 
-### Get Weekly Events
+### Get Events
 
 ```http
 GET /api/events
@@ -47,35 +70,81 @@ GET /api/events
 
 | Parameter | Description | Example |
 |-----------|-------------|---------|
-| `city` | City name | `Saint Louis` |
-| `start` | Start date (YYYY-MM-DD) | `2026-08-03` |
-| `end` | End date (YYYY-MM-DD) | `2026-08-09` |
+| `city` | City used for the event search | `Saint Louis` |
+| `start` | Beginning date in `YYYY-MM-DD` format | `2026-08-03` |
+| `end` | Ending date in `YYYY-MM-DD` format | `2026-08-09` |
 
-Example:
+Example request:
 
 ```text
 GET /api/events?city=Saint%20Louis&start=2026-08-03&end=2026-08-09
 ```
 
-The response mirrors the Ticketmaster Discovery API and is consumed by the Saint Louis Events React frontend.
+The response contains the event data returned by the Ticketmaster Discovery API.
 
----
 
 ## Configuration
 
-Create an environment variable containing your Ticketmaster API key.
+The application requires a Ticketmaster API key.
+
+Set the key as an environment variable:
 
 ```text
 TICKETMASTER_API_KEY=your_api_key_here
 ```
 
-or configure it in `application.properties`.
+The application maps this environment variable through its configuration:
 
 ```properties
 ticketmaster.api.key=${TICKETMASTER_API_KEY}
 ```
 
----
+Never commit an actual API key to source control.
+
+## Caching
+
+Ticketmaster responses are cached using Caffeine.
+
+The current cache configuration:
+
+- Cache name: `events`
+- Maximum entries: `250`
+- Expiration: `10 minutes` after write
+
+Cache keys include the requested city and date range:
+
+```bash
+city_start_end
+```
+
+For example:
+
+```bash
+Saint Louis_2026-08-03_2026-08-09
+````
+
+This prevents repeated requests for the same event range from unnecessarily reaching Ticketmaster.
+
+## Error Handling
+
+Upstream API failures are translated into application-level exceptions and handled centrally.
+
+The API distinguishes between:
+- Ticketmaster client errors
+- Ticketmaster server errors
+- Connection failures
+- Unexpected application errors
+
+Responses include a timestamp and an appropriate HTTP status.
+
+For example, an upstream Ticketmaster failure returns:
+
+```bash
+{
+  "timestamp": "2026-08-03T12:00:00",
+  "error": "Ticketmaster API returned server error: 500 INTERNAL_SERVER_ERROR"
+}
+````
 
 ## Running Locally
 
@@ -98,17 +167,21 @@ The API will be available at
 http://localhost:8080
 ```
 
----
+Test the events endpoint:
+
+```text
+http://localhost:8080/api/events?city=Saint%20Louis&start=2026-08-03&end=2026-08-09
+```
 
 ## Docker
 
-Build the image.
+Build the image:
 
 ```bash
 docker build -t calendar-backend .
 ```
 
-Run the container.
+Run the container:
 
 ```bash
 docker run \
@@ -117,45 +190,75 @@ docker run \
   calendar-backend
 ```
 
----
+The API will then be available at:
+
+```bash
+http://localhost:8080
+```
 
 ## Deployment
 
-The project includes a `render.yml` configuration for deployment to Render.
+The repository includes a `render.yml` configuration for deployment on Render.
 
-Deployments require the following environment variable:
+The deployment requires:
 
 ```text
 TICKETMASTER_API_KEY
 ```
 
----
+The API key should be configured as a secret environment variable in the deployment environment rather than committed to the repository.
 
 ## Project Structure
 
 ```text
-src
-└── main
-    ├── java
-    │   ├── controller
-    │   ├── service
-    │   ├── client
-    │   ├── config
-    │   ├── exception
-    │   └── ...
-    └── resources
+calendar-backend/
+├── src
+│    └── main
+│        ├── java
+│        │   └── ...
+│        │       ├── controller/
+│        │       ├── service/
+│        │       ├── client/
+│        │       ├── config/
+│        │       └── exception/
+│        │
+│        └── resources/
+├── Dockerfile
+├── render.yml
+├── build.gradle
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+├── LICENSE
+└── README.md
 ```
 
----
+## Frontend
 
-## Related Project
+The backend powers the React frontend:
 
-**Saint Louis Events Frontend**
+**Saint Louis Events**
 
 https://github.com/mcckyle/the-calendar
 
----
+Live application:
+
+https://mcckyle.github.io/the-calendar/
+
+## Development Notes
+
+The backend intentionally keeps its public API small.
+
+The frontend only needs to request events for a city and date range, while the backend handles:
+
+1. External API communication.
+2. API-key protection.
+3. Response caching.
+4. Error translation.
+5. Deployment configuration.
+
+This separation keeps the frontend lightweight while providing a clear boundary around external service access.
 
 ## License
 
-This project is licensed under the MIT License.
+Saint Louis Events Backend is available under the [MIT License](./LICENSE).

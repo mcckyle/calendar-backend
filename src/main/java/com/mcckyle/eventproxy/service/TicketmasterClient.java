@@ -2,7 +2,7 @@
 //
 //   Filename: TicketmasterClient.java
 //   Author: Kyle McColgan
-//   Date: 6 August 2026
+//   Date: 3 October 2026
 //   Description: This file contains networking functionality for Saint Louis Events.
 //
 //***************************************************************************************
@@ -17,6 +17,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 //***************************************************************************************
 
@@ -36,30 +39,35 @@ public class TicketmasterClient
     @Cacheable(value = "events", key="#city + '_' + #start + '_' + #end")
     public String fetchEvents(String city, String start, String end)
     {
-        String ticketmasterUrl = String.format(
-                "https://app.ticketmaster.com/discovery/v2/events.json?apikey=%s&city=%s&startDateTime=%sT00:00:00Z&endDateTime=%sT23:59:59Z",
-                apiKey, city, start, end
-        );
+        URI ticketmasterUri = UriComponentsBuilder
+                .fromUriString("https://app.ticketmaster.com/discovery/v2/events.json")
+                .queryParam("apikey", apiKey)
+                .queryParam("city", city)
+                .queryParam("startDateTime", start + "T00:00:00Z")
+                .queryParam("endDateTime", end + "T23:59:59Z")
+                .build()
+                .encode()
+                .toUri();
 
         try
         {
-            return restTemplate.getForObject(ticketmasterUrl, String.class);
+            return restTemplate.getForObject(ticketmasterUri, String.class);
         }
-        catch(HttpClientErrorException e)
+        catch (HttpClientErrorException ex)
         {
-            throw new EventServiceException("Ticketmaster API returned client error: " + e.getStatusCode(), e);
+            throw new EventServiceException("Ticketmaster API returned client error: " + ex.getStatusCode(), ex);
         }
-        catch(HttpServerErrorException e)
+        catch (HttpServerErrorException ex)
         {
-            throw new EventServiceException("Ticketmaster API returned server error: " + e.getStatusCode(), e);
+            throw new EventServiceException("Ticketmaster API returned server error: " + ex.getStatusCode(), ex);
         }
-        catch(ResourceAccessException e)
+        catch (ResourceAccessException ex)
         {
-            throw new EventServiceException("Unable to connect to Ticketmaster API. Please try again later. ", e);
+            throw new EventServiceException("Unable to connect to Ticketmaster API. " + "Please try again later.", ex);
         }
-        catch(Exception e)
+        catch (Exception ex)
         {
-            throw new EventServiceException("Unexpected error while contacting Ticketmaster.", e);
+            throw new EventServiceException("Unexpected error while contacting Ticketmaster.", ex);
         }
     }
 }

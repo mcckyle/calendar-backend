@@ -2,8 +2,8 @@
 //
 //   Filename: GlobalExceptionHandler.java
 //   Author: Kyle McColgan
-//   Date: 30 January 2026
-//   Description: This file contains custom exception function definitions for the Saint Louis Events Calendar.
+//   Date: 3 October 2026
+//   Description: This file contains custom exception function definitions for Saint Louis Events.
 //
 //***************************************************************************************
 
@@ -24,18 +24,14 @@ public class GlobalExceptionHandler
     @ExceptionHandler(EventServiceException.class)
     public ResponseEntity<Map<String, Object>> handleEventServiceException(EventServiceException ex)
     {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("error", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.BAD_GATEWAY);
+        Map<String, Object> body = Map.of("timestamp", LocalDateTime.now(), "error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex)
     {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("error", "Internal server error");
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+        Map<String, Object> body = Map.of("timestamp", LocalDateTime.now(), "error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }
