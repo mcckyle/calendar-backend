@@ -3,6 +3,9 @@ FROM gradle:8.14.6-jdk17 AS build
 WORKDIR /app
 COPY . .
 
+# Give gradlew execution permissions (crucial when deploying from Windows to Linux/Render).
+RUN chmod +x ./gradlew
+
 # CRUCIAL FOR FREE TIER: Force the Gradle Daemon to stay low-memory and use the wrapper.
 RUN ./gradlew clean bootJar -x test --no-daemon \
     -Dorg.gradle.jvmargs="-Xmx300m -XX:+UseSerialGC" \
