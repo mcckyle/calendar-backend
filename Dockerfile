@@ -18,4 +18,4 @@ ENV SERVER_PORT=8080
 EXPOSE 8080
 
 # CRUCIAL FOR FREE TIER: Prevent Spring Boot from bursting past 512MB RAM at startup.
-ENTRYPOINT ["java", "-XX:+UseSerialGC", "-XX:+ExitOnOutOfMemoryError", "Xms64m", "-Xmx300m", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:+UseSerialGC", "-XX:+ExitOnOutOfMemoryError", "-Xms64m", "-Xmx300m", "-jar", "app.jar"]
